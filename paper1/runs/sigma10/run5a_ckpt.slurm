@@ -15,8 +15,6 @@
 ## For ikt, --mem may be 58G or more depending on the memory of your nodes.
 ## See above section on "Specifying memory" for choices for --mem.
 #SBATCH --mem=250G
-## Specify the working directory for this job
-#SBATCH --workdir=/gscratch/astro/moeyensj/atm/atm/data/runs/
 ##turn on e-mail notification
 #SBATCH --mail-type=ALL
 #SBATCH --mail-user=moeyensj@uw.edu
