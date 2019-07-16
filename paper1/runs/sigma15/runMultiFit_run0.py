@@ -1,7 +1,7 @@
 if __name__ == "__main__":
     
-    ### TRACK 3 - 3 Parameters ###
-    RUN_NAME = "run4a"
+    ### CONSTANT EMISSIVITY ###
+    RUN_NAME = "run0"
     
     import os
     import yaml
@@ -11,7 +11,7 @@ if __name__ == "__main__":
     import warnings
 
     import sys
-    sys.path.append("../..")
+    sys.path.append("/gscratch/astro/moeyensj/atm/atm")
 
     from atm.models import STM, FRM, NEATM
     from atm.obs import WISE
@@ -23,7 +23,7 @@ if __name__ == "__main__":
     model = NEATM(verbose=False)
     
     # Grab observations
-    con = sql.connect("/gscratch/astro/moeyensj/atm/atm/data/sample.db")
+    con = sql.connect("/gscratch/astro/moeyensj/atm/atm_data/paper1/sample.db")
     observations = pd.read_sql("""SELECT * FROM observations""", con)
     additional = pd.read_sql("""SELECT * FROM additional""", con)
     
@@ -45,17 +45,12 @@ if __name__ == "__main__":
     # Create data dictionary
     dataDict = {}
     dataDict[RUN_NAME] = observations.copy()
-    dataDict[RUN_NAME]["eps_W3"] = np.ones(len(observations)) * 0.80
-    dataDict[RUN_NAME]["eps_W4"] = np.ones(len(observations)) * 0.98
     
     # Create fit dictionary
     fitDict = {}
     fitDict[RUN_NAME] = {
-        "fitParameters" : ["logT1", "logD", "eps_W1W2"],
-        "emissivitySpecification" : {
-                    "eps_W1W2" : ["W1","W2"],
-                    "eps_W3" : ["W3"],
-                    "eps_W4" : ["W4"]},
+        "fitParameters" : ["logT1", "logD", "eps"],
+        "emissivitySpecification" : None,
         "albedoSpecification": "auto",
         "fitFilters" : "all",
         "columnMapping" : {
@@ -65,18 +60,18 @@ if __name__ == "__main__":
                     "r_au" : "r_au",
                     "delta_au" : "delta_au",
                     "alpha_rad" : "alpha_rad",
-                    "eps" : ["eps_W3", "eps_W4"],
+                    "eps" : None,
                     "p" : None,
                     "G" : "G",
                     "logT1" : None,
                     "logD" : None,
                     "flux_si" : ["flux_W1_si", "flux_W2_si", "flux_W3_si", "flux_W4_si"],
-                    "fluxErr_si" : ["fluxErr_W1_si", "fluxErr_W2_si", "fluxErr_W3_si", "fluxErr_W4_si"],
+                    "fluxErr_si" : ["fluxErr_W1_si", "fluxErr_W2_si", "fluxErr_W3_si", "fluxErr_W4_si"],  
                     "mag" : ["mag_W1", "mag_W2", "mag_W3", "mag_W4"],
                     "magErr" : ["magErr_W1", "magErr_W2", "magErr_W3", "magErr_W4"]
         }
     }
-
+    
     # Load fit configuration
     with open("config.yml", 'r') as stream:
         fitConfig = yaml.load(stream, Loader=yaml.FullLoader)

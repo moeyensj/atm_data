@@ -4,7 +4,7 @@ chains: 25
 plotCorner: true
 plotTrace: true
 progressBar: false
-runDir: /gscratch/astro/moeyensj/atm/atm/data/runs/
+runDir: /gscratch/astro/moeyensj/atm/atm_data/paper1/runs/sigma15
 samples: 3000
 scaling: 0.01
 threads: 25

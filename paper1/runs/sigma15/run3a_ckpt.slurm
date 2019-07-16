@@ -1,6 +1,6 @@
 #!/bin/bash
 ##Name
-#SBATCH --job-name=atm_run4b
+#SBATCH --job-name=atm_run3a
 ## Allocation Definition
 ## On mox and ikt, the account and partition options should be the same.
 #SBATCH --account=astro-ckpt
@@ -15,8 +15,6 @@
 ## For ikt, --mem may be 58G or more depending on the memory of your nodes.
 ## See above section on "Specifying memory" for choices for --mem.
 #SBATCH --mem=250G
-## Specify the working directory for this job
-#SBATCH --workdir=/gscratch/astro/moeyensj/atm/atm/data/runs/
 ##turn on e-mail notification
 #SBATCH --mail-type=ALL
 #SBATCH --mail-user=moeyensj@uw.edu
@@ -24,8 +22,8 @@
 #SBATCH --export=all
 #SBATCH --open-mode=append
 
-cd /gscratch/astro/moeyensj/atm/atm/data/runs/
+cd /gscratch/astro/moeyensj/atm/atm_data/paper1/runs/sigma15
 source ~/.bashrc
 conda info -a
-conda activate atm_run4b
-python runMultiFit_run4b.py
+conda activate atm_run3a
+python runMultiFit_run3a.py

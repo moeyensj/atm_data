@@ -1,7 +1,7 @@
 if __name__ == "__main__":
     
-    ### TRACK 3 - 4 Parameters ###
-    RUN_NAME = "run4b"
+    ### NEOWISE (IGNORING W2) ###
+    RUN_NAME = "run5b"
     
     import os
     import yaml
@@ -11,7 +11,7 @@ if __name__ == "__main__":
     import warnings
 
     import sys
-    sys.path.append("../..")
+    sys.path.append("/gscratch/astro/moeyensj/atm/atm")
 
     from atm.models import STM, FRM, NEATM
     from atm.obs import WISE
@@ -23,7 +23,7 @@ if __name__ == "__main__":
     model = NEATM(verbose=False)
     
     # Grab observations
-    con = sql.connect("/gscratch/astro/moeyensj/atm/atm/data/sample.db")
+    con = sql.connect("/gscratch/astro/moeyensj/atm/atm_data/paper1/sample.db")
     observations = pd.read_sql("""SELECT * FROM observations""", con)
     additional = pd.read_sql("""SELECT * FROM additional""", con)
     
@@ -45,16 +45,20 @@ if __name__ == "__main__":
     # Create data dictionary
     dataDict = {}
     dataDict[RUN_NAME] = observations.copy()
-    dataDict[RUN_NAME]["eps_W3"] = np.ones(len(observations)) * 0.80
-    dataDict[RUN_NAME]["eps_W4"] = np.ones(len(observations)) * 0.98
+    dataDict[RUN_NAME]["eps"] = np.ones(len(observations)) * 0.9
+    dataDict[RUN_NAME]["p_W3"] = np.ones(len(observations)) * 0.0
+    dataDict[RUN_NAME]["p_W4"] = np.ones(len(observations)) * 0.0
     
     # Create fit dictionary
     fitDict = {}
     fitDict[RUN_NAME] = {
-        "fitParameters" : ["logT1", "logD", "eps_W1", "eps_W2"],
-        "emissivitySpecification" : "perBand",
-        "albedoSpecification": "auto",
-        "fitFilters" : "all",
+        "fitParameters" : ["logT1", "logD", "p_W1W2"],
+        "emissivitySpecification" : None,
+        "albedoSpecification": {
+                    "p_W1W2" : ["W1", "W2"],
+                    "p_W3" : ["W3"],
+                    "p_W4" : ["W4"]},
+        "fitFilters" : ["W1", "W3", "W4"],
         "columnMapping" : {
                     "obs_id" : "obs_id",
                     "designation" : "designation",
@@ -62,8 +66,8 @@ if __name__ == "__main__":
                     "r_au" : "r_au",
                     "delta_au" : "delta_au",
                     "alpha_rad" : "alpha_rad",
-                    "eps" : ["eps_W3", "eps_W4"],
-                    "p" : None,
+                    "eps" : "eps",
+                    "p" : ["p_W3", "p_W4"],
                     "G" : "G",
                     "logT1" : None,
                     "logD" : None,
@@ -73,7 +77,7 @@ if __name__ == "__main__":
                     "magErr" : ["magErr_W1", "magErr_W2", "magErr_W3", "magErr_W4"]
         }
     }
-
+    
     # Load fit configuration
     with open("config.yml", 'r') as stream:
         fitConfig = yaml.load(stream, Loader=yaml.FullLoader)

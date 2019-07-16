@@ -1,7 +1,7 @@
 if __name__ == "__main__":
     
-    ### TRACK 1 - 4 Parameters ###
-    RUN_NAME = "run2b"
+    ### TRACK 3 - 4 Parameters ###
+    RUN_NAME = "run4b"
     
     import os
     import yaml
@@ -11,7 +11,7 @@ if __name__ == "__main__":
     import warnings
 
     import sys
-    sys.path.append("../..")
+    sys.path.append("/gscratch/astro/moeyensj/atm/atm")
 
     from atm.models import STM, FRM, NEATM
     from atm.obs import WISE
@@ -23,7 +23,7 @@ if __name__ == "__main__":
     model = NEATM(verbose=False)
     
     # Grab observations
-    con = sql.connect("/gscratch/astro/moeyensj/atm/atm/data/sample.db")
+    con = sql.connect("/gscratch/astro/moeyensj/atm/atm_data/paper1/sample.db")
     observations = pd.read_sql("""SELECT * FROM observations""", con)
     additional = pd.read_sql("""SELECT * FROM additional""", con)
     
@@ -45,8 +45,8 @@ if __name__ == "__main__":
     # Create data dictionary
     dataDict = {}
     dataDict[RUN_NAME] = observations.copy()
-    dataDict[RUN_NAME]["eps_W3"] = np.ones(len(observations)) * 0.70
-    dataDict[RUN_NAME]["eps_W4"] = np.ones(len(observations)) * 0.86
+    dataDict[RUN_NAME]["eps_W3"] = np.ones(len(observations)) * 0.80
+    dataDict[RUN_NAME]["eps_W4"] = np.ones(len(observations)) * 0.98
     
     # Create fit dictionary
     fitDict = {}
